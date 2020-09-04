@@ -2,16 +2,19 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList } from 'react-native';
 
+import LembreteItem from './components/LembreteItem';
+import LembreteInput from './components/LembreteInput';
+
 export default function App() {
-  const [lembrete, setLembrete] = useState ('');
+  /*const [lembrete, setLembrete] = useState ('');
+  const capturarLembrete = (lembrete) => {
+    setLembrete(lembrete);
+  }*/
   const[lembretes, setLembretes] = useState ([]);
   const[contadorLembretes, setContadorLembretes] = useState(0);
 
-  const capturarLembrete = (lembrete) => {
-    setLembrete(lembrete);
-  }
 
-  const adicionarLembrete = () => {
+  const adicionarLembrete = (lembrete) => {
     setLembretes(lembretes => {
         setContadorLembretes(contadorLembretes + 1);
         return [...lembretes, {key: contadorLembretes.toString(), value: lembrete}]
@@ -19,30 +22,26 @@ export default function App() {
     //console.log (lembrete);
   }
 
+  const removerLembrete = (keyASerRemovida) =>{
+    setLembretes(lembretes => {
+      return lembretes.filter((lembrete) => {
+         return lembrete.key !== keyASerRemovida
+      })
+    });
+  }
+
   return (
     <View style={estilos.telaPrincipalView}>
-      <View style={estilos.entradaView}>
-        {/*usuário irá inserir seus lembretes aqui */}
-        <TextInput 
-          placeholder="Lembrar..."
-          style={estilos.lembreteTextInput}
-          onChangeText={capturarLembrete}
-          value={lembrete}
-        />
-        <Button 
-          title="Adicionar"
-          onPress={adicionarLembrete}
-        />
-      </View>
-      <View>
-
+      <LembreteInput onAdicionarLembrete={adicionarLembrete}/>
         <FlatList 
           data={lembretes}
           renderItem={
             (lembrete) => (
-              <View style={estilos.itemNaListaView}>
-                <Text>{lembrete.item.value}</Text>
-              </View>
+              <LembreteItem
+                chave={lembrete.item.key} 
+                lembrete={lembrete.item.value} 
+                j={removerLembrete}
+              />
             )
           }
         />      
@@ -56,7 +55,6 @@ export default function App() {
           ))}
         </ScrollView>
         */}
-      </View>
     </View>
   );
 }
